@@ -4,7 +4,7 @@ import { download } from '../assets'
 import {downloadImage} from '../utils'
 
 const Card = ({ _id, name, prompt, photo }) => {
-  const imageUrl = `http://localhost:8080${photo}`;
+  const imageUrl = `https://image-ai-backend-o8dk.onrender.com${photo}`;
   return (
     <div className='rounded-xl group relative shadow-card hover:shadow-cardhover card'>
       <img
