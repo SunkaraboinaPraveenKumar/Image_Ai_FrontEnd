@@ -3,13 +3,12 @@ import { download } from '../assets'
 
 import {downloadImage} from '../utils'
 
-const Card = ({ _id, name, prompt, photo }) => {
-  const imageUrl = `https://image-ai-backend-o8dk.onrender.com${photo}`;
+const Card = ({ id, name, prompt, photoUrl }) => {
   return (
     <div className='rounded-xl group relative shadow-card hover:shadow-cardhover card'>
       <img
         className='w-full h-auto object-cover rounded-xl'
-        src={imageUrl}
+        src={photo}  // Use the Firebase Storage download URL for the photo
         alt={prompt}
         onError={() => console.log('Image failed to load')}
       />
@@ -22,8 +21,12 @@ const Card = ({ _id, name, prompt, photo }) => {
             </div>
             <p className='text-white text-md'>{name}</p>
           </div>
-          <button type='button' onClick={() => downloadImage(_id, photo)} className='outline-none bg-transparent border-none'>
-            <img src={download} alt="download" className='w-6 h-6 object-contain invert'/>
+          <button
+            type='button'
+            onClick={() => downloadImage(id, photo)}  // Use the Firestore `id` and `photo` URL
+            className='outline-none bg-transparent border-none'
+          >
+            <img src={photoUrl} alt="download" className='w-6 h-6 object-contain invert'/>
           </button>
         </div>
       </div>
@@ -31,4 +34,4 @@ const Card = ({ _id, name, prompt, photo }) => {
   );
 };
 
-export default Card
+export default Card;

@@ -1,5 +1,4 @@
 import {surpriseMePrompts} from '../constants'
-import FileSaver from 'file-saver';
 export function getRandomPrompt(prompt){
     const randomIndex=Math.floor(Math.random()*surpriseMePrompts.length);
     const randomPrompt=surpriseMePrompts[randomIndex];
@@ -7,6 +6,12 @@ export function getRandomPrompt(prompt){
     return randomPrompt;
 }
 
-export async function downloadImage(_id,photo){
-    FileSaver.saveAs(photo,`download-${_id}.jpg`)
-}
+export const downloadImage = (id, photoUrl) => {
+    const link = document.createElement('a');
+    link.href = photoUrl;  // Use the Firebase Storage URL to download the image
+    link.download = `${id}.jpg`;  // Set the download filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
