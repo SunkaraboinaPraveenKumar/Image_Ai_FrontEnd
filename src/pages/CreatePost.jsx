@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
 import { FormField, Loader } from '../components';
+import { db, storage } from '../../firebase';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { collection, addDoc } from 'firebase/firestore';
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -57,31 +60,67 @@ const CreatePost = () => {
     }
   };
   
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  
+  //   if (form.prompt && form.photo) {
+  //     // console.log('Photo data:', form.photo);
+  //     setLoading(true);
+  //     try {
+  //       const response = await fetch('https://image-ai-backend-o8dk.onrender.com/api/v1/post', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ ...form }),
+  //       });
+  
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! status: ${response.status}`);
+  //       }
+  
+  //       await response.json();
+  //       alert('Success');
+  //       navigate('/');
+  //     } catch (err) {
+  //       alert(err);
+  //       console.error('Error submitting form:', err); // Log the error
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     alert('Please generate an image with proper details');
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (form.prompt && form.photo) {
-      console.log('Photo data:', form.photo);
       setLoading(true);
       try {
-        const response = await fetch('https://image-ai-backend-o8dk.onrender.com/api/v1/post', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ ...form }),
+        // Create a reference to Firebase Storage
+        const storageRef = ref(storage, `images/${Date.now()}_${form.name}.jpg`);
+  
+        // Upload the base64 image to Firebase Storage
+        await uploadString(storageRef, form.photo, 'base64', {
+          contentType: 'image/jpeg',
         });
   
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        // Get the download URL for the image
+        const downloadURL = await getDownloadURL(storageRef);
   
-        await response.json();
-        alert('Success');
-        navigate('/');
+        // Save the form data along with the image download URL to Firestore
+        await addDoc(collection(db, 'posts'), {
+          name: form.name,
+          prompt: form.prompt,
+          photoUrl: downloadURL, // Save the image URL, not the base64 string
+          createdAt: new Date(),
+        });
+  
+        alert('Post successfully created!');
+        navigate('/');  // Navigate to home after successful submission
       } catch (err) {
-        alert(err);
-        console.error('Error submitting form:', err); // Log the error
+        alert('Error uploading image or saving post:', err);
       } finally {
         setLoading(false);
       }
@@ -89,8 +128,6 @@ const CreatePost = () => {
       alert('Please generate an image with proper details');
     }
   };
-  
-  
 
   return (
     <section className="max-w-7xl mx-auto">
