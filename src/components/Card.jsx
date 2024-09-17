@@ -8,7 +8,7 @@ const Card = ({ id, name, prompt, photoUrl }) => {
     <div className='rounded-xl group relative shadow-card hover:shadow-cardhover card'>
       <img
         className='w-full h-auto object-cover rounded-xl'
-        src={photo}  // Use the Firebase Storage download URL for the photo
+        src={photoUrl}  // Use the Firebase Storage download URL for the photo
         alt={prompt}
         onError={() => console.log('Image failed to load')}
       />
@@ -26,7 +26,7 @@ const Card = ({ id, name, prompt, photoUrl }) => {
             onClick={() => downloadImage(id, photoUrl)}  // Use the Firestore `id` and `photo` URL
             className='outline-none bg-transparent border-none'
           >
-            <img src={photoUrl} alt="download" className='w-6 h-6 object-contain invert'/>
+            <img src={download} alt="download" className='w-6 h-6 object-contain invert'/>
           </button>
         </div>
       </div>
