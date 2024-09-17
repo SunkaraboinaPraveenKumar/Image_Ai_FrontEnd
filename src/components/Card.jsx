@@ -23,7 +23,7 @@ const Card = ({ id, name, prompt, photoUrl }) => {
           </div>
           <button
             type='button'
-            onClick={() => downloadImage(id, photo)}  // Use the Firestore `id` and `photo` URL
+            onClick={() => downloadImage(id, photoUrl)}  // Use the Firestore `id` and `photo` URL
             className='outline-none bg-transparent border-none'
           >
             <img src={photoUrl} alt="download" className='w-6 h-6 object-contain invert'/>
